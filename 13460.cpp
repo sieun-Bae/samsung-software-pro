@@ -20,39 +20,73 @@ typedef struct Info{
 
 queue<Info> R, B;
 
-int dx = {-1,1,0,0};
-int dy = {0,0,-1,1};
+int result=0;
+
+int dx[4] = {-1,1,0,0};
+int dy[4] = {0,0,-1,1};
 
 int N,M;
-int map[10][10];
-int visited[10][10];
+int map[11][11];
+bool visited[11][11][11][11];
 char buf[15];
-Info final;
-int count;
 
-void bfs()
+int bfs()
 {
-	//1. 체크아웃
+	visited[R.front().x][R.front().y][B.front().x][B.front().y] = true;
+	while (!R.empty()) {
+		int Rsize = R.size();
+		while(Rsize--) {
+			//1. 체크아웃
+			Info Rcur = R.front();
+			R.pop();
 
-	//2. 목적지인가?
-	if (count <= 10 && cur.x == final.x && cur.y == final.y) {
-		printf("%d", count);
-	}
-	if (count > 10) {
-		printf("-1\n");
-		return;
-	}
-	//3. 갈 수 있는곳 순회
-	for (int i=0;i<4;i++) {
-		for (int j=0;j<4;j++) {
-			//4. 갈 수 있는가?
+			Info Bcur = B.front();
+			B.pop();
+
+			//2. 목적지인가?
+			if (map[Rcur.x][Rcur.y] == 'O') {
+				return result;
+			}
+
+			//3. 갈 수 있는곳 순회
+			for (int i=0;i<4;i++) {
+				//4. 갈 수 있는가?
+				int tempR=0, tempB=0;
+				Info Rnxt=Rcur, Bnxt=Bcur;
+				while (map[Rnxt.x+dx[i]][Rnxt.y+dy[i]] != '#' && map[Rnxt.x][Rnxt.y] != 'O') {
+					Rnxt.x += dx[i];
+					Rnxt.y += dy[i];
+					tempR++;
+				}
+				while (map[Bnxt.x+dx[i]][Bnxt.y+dy[i]] != '#' && map[Bnxt.x][Bnxt.y] != 'O') {
+					Bnxt.x += dx[i];
+					Bnxt.y += dy[i];
+					tempB++;
+				}
+				//겹치면 
+				if (Rnxt.x == Bnxt.x && Rnxt.y == Bnxt.y) {
+					if (map[Rnxt.x][Rnxt.y] == 'O') continue;
+					if (tempR > tempB) {
+						Rnxt.x -= dx[i];
+						Rnxt.y -= dy[i];
+					} else {
+						Bnxt.x -= dx[i];
+						Bnxt.y -= dy[i];
+					}
+				}
+				//5. 체크인, 간다.(enqueue)
+				if (visited[Rnxt.x][Rnxt.y][Bnxt.x][Bnxt.y]) continue;
+				R.push(Rnxt);
+				B.push(Bnxt);
+				visited[Rnxt.x][Rnxt.y][Bnxt.x][Bnxt.y] = true;
+			}
 			
-			//5. 체크인, 간다.(enqueue)
 		}
+		if (result == 10) 
+			return -1;
+		result++;
 	}
-		
-		
-
+	return -1;
 }
 
 int main()
@@ -63,21 +97,12 @@ int main()
 		for (int j=0;j<M;j++) {
 			map[i][j] = buf[j];
 			if (map[i][j] == 'B') 
-				B.push(Info(i, j));
+				B.push(Info(i, j)), map[i][j] = '.';
 			else if (map[i][j] == 'R')
-				R.push(Info(i, j));
-			else if (map[i][j] == '0') {
-				final.x = i;
-				final.y = j;
-			}
+				R.push(Info(i, j)), map[i][j] = '.';
 		}
 	}
-	/*
-	for (int i=0;i<N;i++) {
-		for (int j=0;j<M;j++) {
-			printf("%c", map[i][j]);
-		}
-	}*/
+	printf("%d\n", bfs());
 
 	return 0;
 }
