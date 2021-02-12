@@ -1,3 +1,4 @@
+//two pointer, 부분합
 #include <iostream>
 #include <vector>
 
