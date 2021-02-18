@@ -31,7 +31,7 @@ void dijk()
 {
 	priority_queue<Dijk_Info, vector<Dijk_Info>, comp> pq;
 	dist[start_point] = 0;
-	pq.push(Dijk_Info(start_point,0));
+	pq.push(Dijk_Info(start_point,0)); 
 	while (!pq.empty()) {
 		Dijk_Info cur = pq.top();
 		pq.pop();
