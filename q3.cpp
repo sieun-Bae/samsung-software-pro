@@ -87,3 +87,9 @@ int main() {
     //         왼쪽으로 이동하면 이동한만큼 그 후 애들 ++;
     return 0;
 }
+
+
+
+select orderInfo.buyer_id, orderInfo.buy_date, library.book_name, library.price
+from library, orderInfo
+where library.book_name = 'Looking with Elice' and orderInfo.buy_date between '2020-07-27' and '2020-07-31';
