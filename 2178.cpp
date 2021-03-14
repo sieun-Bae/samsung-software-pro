@@ -1,12 +1,35 @@
 #include <iostream>
+#include <queue>
 #define MAX 987654321
 using namespace std;
 
 int map[110][110], n, m;
 bool visited[110][110];
-int result = MAX;
+int result = 0;
 int dx[4] = {0,0,1,-1};
 int dy[4] = {1,-1,0,0};
+
+void bfs(int x, int y)
+{
+	visited[x][y] = true;
+	queue<pair <int,int> > q;
+	q.push(make_pair(x,y));
+	while(!q.empty()) {
+		int x = q.front().first;
+		int y = q.front().second;
+		for (int i=0;i<4;i++) {
+			int tx = x+dx[i];
+			int ty = y+dy[i];
+			if (tx < 0 || tx >= n || ty < 0 || ty >= m) continue;
+			if (map[tx][ty] == 1 && visited[tx][ty] == false) {
+				//간다
+				result++;
+				visited[x][y] = true;
+				q.push(make_pair(tx, ty));
+			}
+		}
+	}
+}
 void dfs(int x, int y, int cnt)
 {
 	//체크인
