@@ -16,6 +16,9 @@ void solution()
 {
 	vector<int> dead_tree[110];
 	for (int i=1;i<=(n*n);i++) {
+		while(true) {
+			break;
+		}
 		sort(tree[i].begin(), tree[i].end()); //나이 오름차순 정렬
 		int r=1;
 		int c=1;
