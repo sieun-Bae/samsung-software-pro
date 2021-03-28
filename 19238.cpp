@@ -121,6 +121,7 @@ int main()
 			battery -= miin;
 			car.first = people[index].sx;
 			car.second = people[index].sy;
+			printf("m: %d\n", m);
 		} else {
 			battery = 0;
 			break;
@@ -141,9 +142,12 @@ int main()
 		}
 		printf("battery: %d\n", battery);
 	}
+	
 	if (battery || m == 0) {
+		printf("m: %d\n", m);
 		printf("%d\n", battery);
 	} else {
+		printf("m: %d\n", m);
 		printf("-1");
 	}
 

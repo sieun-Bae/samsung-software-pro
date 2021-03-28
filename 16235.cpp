@@ -11,36 +11,70 @@ int dx[8] = {1,-1,0,0,1,-1,1,-1};
 int dy[8] = {0,0,1,-1,1,1,-1,-1};
 int n,m,k;
 
+bool cmp(const pair<int, bool>& o1, const pair<int, bool>& o2)
+{
+	return o1.first < o2.first;
+}
+
+void log()
+{
+	printf("tree\n");
+	for (int i=1;i<n*n;i++) {
+		for (int j=0;j<tree[i].size();j++) {
+			printf("%d: %d ", i, tree[i][j]);
+		}
+	}
+	printf("\nmap\n");
+	for (int i=1;i<=n;i++) {
+		for (int j=1;j<=n;j++) {
+			printf("%d", map[i][j]);
+		}
+		printf("\n");
+	}
+}
 
 void solution()
 {
 	vector<int> dead_tree[110];
 	for (int i=1;i<=(n*n);i++) {
-		while(true) {
-			break;
+		vector< pair< int, bool> > trees; //<<인덱스, 나무나이>, 양분먹었는지여부>
+	
+		for (int j=0;j<tree[i].size();j++) {
+			trees.push_back(make_pair(tree[i][j],false));
 		}
-		sort(tree[i].begin(), tree[i].end()); //나이 오름차순 정렬
 		int r=1;
 		int c=1;
 		if (n!=1) {
 			r = i/n+1;
 			c = i%n;
 		}
-		int j=0;
-		for (j=0; j<tree[i].size(); j++) {
-			if (tree[i][j] <= map[r][c]) { //양분을 먹을 수 있으면
-				map[r][c] -= tree[i][j];
-				tree[i][j] += 1;
-			} else //양분 못먹는 나무 순서라면
-				break;
+		if (trees.size() == 0) {
+			continue;
+		} else {
+			while(true) {
+				sort(trees.begin(), trees.end(), cmp); //나이 오름차순 정렬
+				
+				if (trees.front().first <= map[r][c]) { //양분을 먹을 수 있으면
+					trees.front().second = true;
+					map[r][c] -= trees.front().first;
+					trees.front().first += 1;
+				} else {
+					break;
+				}
+			}
+			//죽은 나무 벡터에 추가
+			tree[i].clear();
+			for (int j=0;j<trees.size();j++) {
+				if (trees[j].second == true) {
+					tree[i].push_back(trees[j].first);
+				} else {
+					dead_tree[i].push_back(trees[j].first);
+				}
+			}
 		}
-		//죽은 나무 벡터에 추가
-		int d = (tree[i].size() - j);
-		while (d--) {
-			dead_tree[i].push_back(tree[i].back());
-			tree[i].pop_back();
-		}
+		
 	}
+	log();
 	for (int i=1;i<=(n*n);i++) {
 		int r=1;
 		int c=1;
@@ -52,6 +86,7 @@ void solution()
 			map[r][c] += dead_tree[i][j]/2;
 		}
 	}
+	log();
 	for (int i=1;i<=(n*n);i++) {
 		int r=1;
 		int c=1;
@@ -71,11 +106,13 @@ void solution()
 			}
 		}
 	}
+	log();
 	for (int i=1;i<=n;i++) {
 		for (int j=1;j<=n;j++) {
 			map[i][j] += A[i][j];
 		}
 	}
+	log();
 } 
 
 int main()
@@ -93,6 +130,7 @@ int main()
 		int p = (x-1)*n + y;
 		tree[p].push_back(z);
 	}
+	//log();
 	for (int i=0;i<k;i++) {
 		solution();
 	}
